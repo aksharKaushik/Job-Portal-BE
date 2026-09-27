@@ -45,4 +45,32 @@ const updateJob = async (req, res, next) => {
   }
 };
 
-module.exports = { createJob, findJobById, updateJob };
+const searchJobs = async (req, res, next) => {
+  try {
+    const jobs = await jobService.searchJobs(req.query);
+    res.status(200).json({
+      success: true,
+      message: "Jobs fetched successfully!",
+      data: jobs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: `Something went wrong! ${error.message}`,
+    });
+  }
+};
+
+const exploreJobs = async (req, res, next) => {
+  try {
+    const jobs = await jobService.exploreJobs();
+    res.status(200).json({
+      success: true,
+      message: "Jobs fetched successfully!",
+      data: jobs,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+module.exports = { createJob, findJobById, updateJob, searchJobs, exploreJobs };
