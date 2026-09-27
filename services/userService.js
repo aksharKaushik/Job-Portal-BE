@@ -68,4 +68,23 @@ const login = async (data) => {
     throw new Error(error.message);
   }
 };
-module.exports = { registerUser, login };
+
+const getMe = async (user) => {
+  try {
+    const existingUser = await User.findById(user._id);
+    return existingUser;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const updateMe = async (user, data) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(user._id, data);
+    return updatedUser;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+module.exports = { registerUser, login, getMe, updateMe };

@@ -69,4 +69,5 @@ const jobSchema = new mongoose.Schema(
   },
 );
 
+jobSchema.index({ title: 1, status: 1, location: 1 });
 module.exports = jobSchema;
