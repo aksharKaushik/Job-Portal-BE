@@ -80,7 +80,9 @@ const getMe = async (user) => {
 
 const updateMe = async (user, data) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(user._id, data);
+    const updatedUser = await User.findByIdAndUpdate(user._id, data, {
+      new: true,
+    });
     return updatedUser;
   } catch (error) {
     throw new Error(error.message);

@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema(
 
     password: {
       type: String,
-      required: true,
     },
 
     role: {
@@ -26,7 +25,10 @@ const userSchema = new mongoose.Schema(
       enum: ["jobseeker", "recruiter"],
       default: "jobseeker",
     },
-
+    experience: {
+      type: Number,
+      min: 0,
+    },
     organisation: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organisation",
@@ -34,7 +36,32 @@ const userSchema = new mongoose.Schema(
         return this.role === "recruiter";
       },
     },
+
+    skills: {
+      type: [String],
+      required: function () {
+        return this.role === "jobseeker";
+      },
+    },
+
+    prefferedLocation: {
+      type: [String],
+      required: function () {
+        return this.role === "jobseeker";
+      },
+    },
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
   },
+
   {
     timestamps: true,
   },

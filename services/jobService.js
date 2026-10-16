@@ -100,7 +100,6 @@ const searchJobs = async (queryParams) => {
     const pageNumber = Number(page);
     const limitNumber = Number(limit);
     const skip = (pageNumber - 1) * limitNumber;
-
     const [jobs, jobsCount] = await Promise.all([
       Job.find(filter)
         .sort(sort)
@@ -169,4 +168,63 @@ const exploreJobs = async () => {
   }
 };
 
-module.exports = { createJob, findJobById, updateJob, searchJobs, exploreJobs };
+const matchingJobs = async (user) => {
+  try {
+    console.log("matching jobs");
+    const userData = await User.findById(user._id);
+    console.log("userData", userData);
+    const jobs = await Job.aggregate([
+      {
+        $match: {
+          status: "active",
+          skills: { $in: userData.skills },
+          location: { $in: userData.prefferedLocation },
+        },
+      },
+      {
+        $lookup: {
+          from: "Organisations",
+          localField: "organisation",
+          foreignField: "_id",
+          as: "organisation",
+        },
+      },
+      {
+        $unwind: "$organisation",
+      },
+      {
+        $project: {
+          title: 1,
+          description: 1,
+          organisation: {
+            name: 1,
+            _id: 1,
+          },
+          location: 1,
+          employmentType: 1,
+          experience: 1,
+          salary: 1,
+          skills: 1,
+          status: 1,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
+    return jobs;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+module.exports = {
+  createJob,
+  findJobById,
+  updateJob,
+  searchJobs,
+  exploreJobs,
+  matchingJobs,
+};
