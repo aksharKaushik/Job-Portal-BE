@@ -34,8 +34,8 @@ const jobSchema = new mongoose.Schema(
     },
 
     experience: {
-      type: String,
-      required: true,
+      min: { type: Number, required: true },
+      max: { type: Number, required: true },
     },
 
     salary: {

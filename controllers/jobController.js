@@ -73,4 +73,26 @@ const exploreJobs = async (req, res, next) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-module.exports = { createJob, findJobById, updateJob, searchJobs, exploreJobs };
+
+const matchingJobs = async (req, res, next) => {
+  try {
+    const jobs = await jobService.matchingJobs(req.user);
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Matching jobs fetched successfully!",
+        data: jobs,
+      });
+  } catch (err) {
+    res.json({ success: false, message: err.message });
+  }
+};
+module.exports = {
+  createJob,
+  findJobById,
+  updateJob,
+  searchJobs,
+  exploreJobs,
+  matchingJobs,
+};
